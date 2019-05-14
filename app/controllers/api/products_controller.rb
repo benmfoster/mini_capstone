@@ -14,6 +14,7 @@ class Api::ProductsController < ApplicationController
 		@product = Product.new(
 			title: params[:title],
 			price: params[:price],
+			description: params[:description],
 			image_url: params[:image_url],
 			secret_power: params[:secret_power],
 		)
