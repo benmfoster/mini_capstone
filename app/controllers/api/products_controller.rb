@@ -1,12 +1,37 @@
 class Api::ProductsController < ApplicationController
 
+	before_action :authenticate_admin, except: [:index, :show]
+
 	def index
-		@products = Product.where("name iLike ?", "%#{params[:search]}").order(:id)
-		render "index.json.jbuilder"
+		@products = Product.all.order(:id)
+
+		if params[:search]
+			@products = @products.where("name iLIKE ?", "%#{params[:search]}%")
+		end
+
+		if params[:discount]
+			@products = @products.where("price < ?", 10)
+		end
+
+		if params[:sort] == "price"
+			if params[:sort_order] == "desc"
+				@products = @products.order(price: :desc)
+			else
+				@products = @products.order(:price)
+			end
+		end
+
+		if params[:category]
+			category = Category.find_by(name: params[:category])
+			@products = category.products
+		end
+
+		render 'index.json.jbuilder'
 	end
 
 	def show
-		@product = Product.find(params[:id])
+		product_id = params[:id]
+		@product = Product.find_by(id: product_id)
 		render "show.json.jbuilder"
 	end
 
@@ -16,30 +41,27 @@ class Api::ProductsController < ApplicationController
 			price: params[:price],
 			description: params[:description],
 			secret_power: params[:secret_power],
-			supplier_id: params[:supplier_id]
 		)
-		if @product.save
-			render 'create.json.jbuilder'
-		else
-			render json: {errors: @product.errors.full_messages}, status: :unprocessable_entity
-		end
-
-	end
-
-	def update
-		@product = Product.find(params[:id])
-
-		@product.title = params[:title] || @product.title
-		@product.price = params[:price] || @product.price
-		@product.secret_power = params[:secret_power] || @product.secret_power
-		@product.supplier_id = params[:supplier_id] || @product.supplier_id
-
 		if @product.save
 			render 'show.json.jbuilder'
 		else
 			render json: {errors: @product.errors.full_messages}, status: :unprocessable_entity
 		end
-		
+	end
+
+	def update
+		@product = Product.find(params[:id])
+
+		@product.name = params[:name] || @product.name
+		@product.price = params[:price] || @product.price
+		@product.secret_power = params[:secret_power] || @product.secret_power
+		@product.description = params[:description] || @product.description
+
+		if @product.save
+			render 'show.json.jbuilder'
+		else
+			render json: {errors: @product.errors.full_messages}, status: :unprocessable_entity
+		end	
 	end
 
 	def destroy
