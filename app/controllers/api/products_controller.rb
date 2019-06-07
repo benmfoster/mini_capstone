@@ -40,7 +40,7 @@ class Api::ProductsController < ApplicationController
 			name: params[:name],
 			price: params[:price],
 			description: params[:description],
-			secret_power: params[:secret_power],
+			secret_power: params[:secret_power]
 		)
 		if @product.save
 			render 'show.json.jbuilder'

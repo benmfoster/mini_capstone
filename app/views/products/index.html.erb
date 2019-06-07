@@ -1,0 +1,8 @@
+<h1>Products</h1>
+
+<% @products.each do |product| %>
+	<h2>Name: <a href = "/products/<%= product.id %>"><%= product.name %></a>
+	<a href = "/products/<%= product.id %>/edit"><span style ="font-size:12px;">Edit</span></a></h2>
+
+<% end %>
+<div><a href = "/products/new">Create new product</a></div>

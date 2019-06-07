@@ -1,6 +1,7 @@
 json.id product.id
 json.name product.name
 json.secret_power product.secret_power
+json.description product.description
 json.supplier_id product.supplier_id
 json.current_user current_user
 json.categories product.categories
