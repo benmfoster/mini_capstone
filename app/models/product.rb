@@ -20,9 +20,9 @@ class Product < ApplicationRecord
 		price + tax
 	end
 
-	validates :name, :price, :secret_power, :description, presence: true
+	validates :name, :price, :description, presence: true
 	validates :name, uniqueness: true
-	validates :description, length: { in: 10..500 }
+	# validates :description, length: { in: 10..500 }
 	validates :price, numericality: { greater_than: 0.0 }
 	
 end
